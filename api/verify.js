@@ -9,7 +9,12 @@ export default async function handler(req) {
   if (!serial) {
     return new Response(JSON.stringify({ error: 'Missing serial number' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     });
   }
 
@@ -27,14 +32,24 @@ export default async function handler(req) {
       console.error(`Fetch failed with status: ${response.status} ${response.statusText}`);
       return new Response(JSON.stringify({ error: 'Slab not found' }), {
         status: 404,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
       });
     }
 
     const data = await response.json();
     return new Response(JSON.stringify(data), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     });
 
   } catch (error) {
@@ -45,7 +60,12 @@ export default async function handler(req) {
     });
     return new Response(JSON.stringify({ error: 'Server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     });
   }
 }
