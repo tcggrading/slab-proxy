@@ -24,6 +24,7 @@ export default async function handler(req) {
     });
 
     if (!response.ok) {
+      console.error(`Fetch failed with status: ${response.status} ${response.statusText}`);
       return new Response(JSON.stringify({ error: 'Slab not found' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },
@@ -37,7 +38,11 @@ export default async function handler(req) {
     });
 
   } catch (error) {
-    console.error('Fetch failed:', error);
+    console.error('Fetch threw an exception:', {
+      message: error.message,
+      stack: error.stack,
+      cause: error.cause || 'No cause provided'
+    });
     return new Response(JSON.stringify({ error: 'Server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
