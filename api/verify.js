@@ -1,23 +1,38 @@
-export default async function handler(req, res) {
-  const { serial } = req.query;
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
+  const { searchParams } = new URL(req.url);
+  const serial = searchParams.get('serial');
 
   if (!serial) {
-    return res.status(400).json({ error: 'Missing serial number' });
+    return new Response(
+      JSON.stringify({ error: 'Missing serial number' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
     const response = await fetch(`https://scd1vdubva5webe4.public.blob.vercel-storage.com/slabs/${serial}.json`);
 
     if (!response.ok) {
-      return res.status(404).json({ error: 'Slab not found' });
+      return new Response(
+        JSON.stringify({ error: 'Slab not found' }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await response.json();
-    return res.status(200).json(data);
-
+    return new Response(
+      JSON.stringify(data),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
-    console.error('Server Error:', error);
-    return res.status(500).json({ error: 'Server error' });
+    console.error(error);
+    return new Response(
+      JSON.stringify({ error: 'Server error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
-
