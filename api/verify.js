@@ -2,41 +2,36 @@ export const config = {
   runtime: 'edge',
 };
 
-export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const serial = searchParams.get('serial');
+export default async function handler(req, res) {
+  const { serial } = req.query;
+
+  console.log('Serial received:', serial); // <-- Add this for debugging
 
   if (!serial) {
-    return new Response(JSON.stringify({ error: 'Missing serial number' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.log('Missing serial');
+    return res.status(400).json({ error: 'Missing serial number' });
   }
 
   try {
-    const fetchUrl = `https://scd1vdubva5webe4.public.blob.vercel-storage.com/slabs/${serial}.json`;
+    const url = `https://scd1vdubva5webe4.public.blob.vercel-storage.com/slabs/${serial}.json`;
+    console.log('Fetching URL:', url); // <-- Add this for debugging
 
-    const response = await fetch(fetchUrl);
+    const response = await fetch(url);
+
+    console.log('Response status:', response.status);
 
     if (!response.ok) {
-      console.log('Fetch failed with status:', response.status);
-      return new Response(JSON.stringify({ error: 'Slab not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      console.log('Slab not found');
+      return res.status(404).json({ error: 'Slab not found' });
     }
 
     const data = await response.json();
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.log('Data fetched:', data);
+
+    return res.status(200).json(data);
+
   } catch (error) {
-    console.error('Catch error:', error);
-    return new Response(JSON.stringify({ error: 'Server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error('Catch Error:', error);
+    return res.status(500).json({ error: 'Server error' });
   }
 }
-
