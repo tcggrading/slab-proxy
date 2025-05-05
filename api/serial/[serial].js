@@ -2,10 +2,10 @@ import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   const {
-    query: { serialNumber },
+    query: { serial },
   } = req;
 
-  const url = `https://raw.githubusercontent.com/tcggrading/tcg-slab-verification/main/data/${serialNumber}.json`;
+  const url = `https://raw.githubusercontent.com/tcggrading/tcg-slab-verification/main/data/${serial}.json`;
 
   try {
     const response = await fetch(url);
