@@ -15,7 +15,13 @@ export default async function handler(req) {
 
   try {
     const url = `https://scd1vdubva5webe4.public.blob.vercel-storage.com/slabs/${serial}.json`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      },
+      cache: 'no-store'
+    });
 
     if (!response.ok) {
       return new Response(JSON.stringify({ error: 'Slab not found' }), {
@@ -31,6 +37,7 @@ export default async function handler(req) {
     });
 
   } catch (error) {
+    console.error('Fetch failed:', error);
     return new Response(JSON.stringify({ error: 'Server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
